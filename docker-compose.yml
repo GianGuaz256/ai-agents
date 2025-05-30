@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: personal-agent-api
+    ports:
+      - "8000:8000"
+    environment:
+      # Required API Keys
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - FIRECRAWL_API_KEY=${FIRECRAWL_API_KEY:-}
+      - APIFY_API_TOKEN=${APIFY_API_TOKEN:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      
+      # Optional Telegram Bot
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID:-}
+      
+      # App Configuration
+      - DEBUG=${DEBUG:-false}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - HOST=0.0.0.0
+      - PORT=8000
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+      
+      # Model Configuration
+      - MODEL_NAME=${MODEL_NAME:-gpt-4}
+      - TEMPERATURE=${TEMPERATURE:-0.7}
+      - MAX_TOKENS=${MAX_TOKENS:-2000}
+      
+      # Notification Configuration
+      - NOTIFICATION_DRIVER=${NOTIFICATION_DRIVER:-console}
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s 
