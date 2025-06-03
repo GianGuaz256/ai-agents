@@ -40,11 +40,6 @@ A sophisticated 7-agent system for comprehensive daily news research and summari
 
 Intelligent content creation and analysis agent for long-form writing projects.
 
-#### 3. Daily News Agent 📱
-**Location**: `agents/daily-news/`
-
-Simplified news aggregation agent for basic daily updates.
-
 ### FastAPI Server
 
 The production-ready API server provides:
@@ -253,8 +248,7 @@ python run_news.py --preset business_markets --quiet
 personal-agent-team/
 ├── agents/                     # Individual agent implementations
 │   ├── enhanced-daily-news/    # Multi-agent news research system
-│   ├── book_writer/           # Content creation agent
-│   └── daily-news/            # Simple news aggregation
+│   └── book_writer/           # Content creation agent
 ├── api/                       # FastAPI server
 │   ├── core/                  # Core configuration and logging
 │   ├── models/                # Request/response models
