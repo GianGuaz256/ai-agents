@@ -19,6 +19,10 @@ if [ -d ".venv" ]; then
     rm -rf .venv
 fi
 
+# Upgrade pip
+echo "Changing directory to root..."
+cd ..
+
 # Create new virtual environment
 echo "Creating new virtual environment..."
 python -m venv .venv
@@ -35,6 +39,8 @@ pip install --upgrade pip
 echo "Installing requirements..."
 pip install -r requirements.txt
 
+# Upgrade pip
+echo "Sourcing virtual environment..."
+source .venv/bin/activate
+
 echo -e "${GREEN}Virtual environment setup complete!${NC}"
-echo -e "${YELLOW}To activate the virtual environment, run:${NC}"
-echo -e "source .venv/bin/activate" 

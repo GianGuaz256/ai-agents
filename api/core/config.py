@@ -111,6 +111,20 @@ class AgentConfig:
             "timeout_seconds": 600,
             "requires_telegram": False,
             "requires_firecrawl": False
+        },
+        "github-trending": {
+            "name": "GitHub Trending Repositories Agent",
+            "description": "Fetches top 10 trending GitHub repositories from the last week using Agno GitHub tools",
+            "module_path": "agents.github-trending.agent",
+            "function_name": "run_github_trending_agent",
+            "default_parameters": {
+                "days_back": 7,
+                "max_repos": 10,
+                "send_telegram": True
+            },
+            "timeout_seconds": 300,
+            "requires_telegram": False,
+            "requires_github": True
         }
         # Future agents can be added here
         # "agent-name": {
@@ -158,6 +172,11 @@ class AgentConfig:
         if agent_config.get("requires_firecrawl", False):
             if not settings.firecrawl_api_key:
                 missing_requirements.append("FIRECRAWL_API_KEY is required for this agent")
+        
+        # Check GitHub requirements
+        if agent_config.get("requires_github", False):
+            if not settings.github_token:
+                missing_requirements.append("GITHUB_TOKEN is recommended for this agent (higher rate limits)")
         
         return missing_requirements
 

@@ -53,6 +53,7 @@ class SchedulerService:
         
         # Add scheduled jobs
         await self._add_daily_news_jobs()
+        await self._add_github_trending_jobs()
         
         # Start the scheduler
         self.scheduler.start()
@@ -151,6 +152,75 @@ class SchedulerService:
                 event_type="scheduled_execution_failed", 
                 message=f"Daily news agent execution failed: {str(e)}",
                 agent_id="enhanced-daily-news",
+                error=str(e)
+            )
+    
+    async def _add_github_trending_jobs(self):
+        """Add scheduled job for GitHub trending agent."""
+        agent_id = "github-trending"
+        
+        # Monday at 9:00 AM CET
+        self.scheduler.add_job(
+            func=self._run_github_trending_agent,
+            trigger=CronTrigger(day_of_week='mon', hour=9, minute=0, timezone='Europe/Rome'),
+            id=f"{agent_id}_weekly",
+            name="GitHub Trending Agent - Weekly Monday",
+            replace_existing=True
+        )
+        
+        self.logger.info(
+            "Scheduled GitHub trending agent",
+            jobs=["Monday 9:00 AM CET"]
+        )
+    
+    async def _run_github_trending_agent(self):
+        """Execute the GitHub trending repositories agent."""
+        if not self.agent_manager:
+            self.logger.error("Agent manager not available for scheduled execution")
+            return
+            
+        try:
+            self.logger.info("Starting scheduled execution of GitHub trending agent")
+            
+            # Default parameters for the GitHub trending agent
+            parameters = {
+                "days_back": 7,
+                "max_repos": 10,
+                "send_telegram": True,
+                "scheduled": True,
+                "execution_time": datetime.now().isoformat()
+            }
+            
+            # Execute the agent
+            execution_result = await self.agent_manager.execute_agent(
+                agent_id="github-trending",
+                parameters=parameters
+            )
+            
+            self.logger.info(
+                "Scheduled GitHub trending agent execution completed",
+                execution_id=execution_result.execution_id,
+                status=execution_result.status
+            )
+            
+            log_system_event(
+                event_type="scheduled_execution_completed",
+                message="GitHub trending agent executed successfully",
+                agent_id="github-trending",
+                execution_id=execution_result.execution_id
+            )
+            
+        except Exception as e:
+            self.logger.error(
+                "Scheduled GitHub trending agent execution failed",
+                error=str(e),
+                error_type=type(e).__name__
+            )
+            
+            log_system_event(
+                event_type="scheduled_execution_failed", 
+                message=f"GitHub trending agent execution failed: {str(e)}",
+                agent_id="github-trending",
                 error=str(e)
             )
     

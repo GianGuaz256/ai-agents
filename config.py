@@ -21,6 +21,9 @@ class Config:
     # Firecrawl Configuration
     FIRECRAWL_API_KEY = os.getenv('FIRECRAWL_API_KEY')
     APIFY_API_TOKEN = os.getenv('APIFY_API_TOKEN')
+
+    # GitHub Configuration
+    GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
     
     # Environment Configuration
     ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
